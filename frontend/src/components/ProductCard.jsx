@@ -3,6 +3,7 @@ import { EditIcon  , Trash2Icon} from 'lucide-react'
 import {Link} from "react-router-dom"
 import { deleteProduct } from '../slices/productSlice'
 import { useDispatch } from 'react-redux'
+import { fetchProducts } from '../slices/productSlice'
 import toast from 'react-hot-toast'
 // import {setUpdat}
 
@@ -11,7 +12,13 @@ const ProductCard = ({product}) => {
 //   let [message,setMessage] = useState('')
   const deleteProductCard = async (productid) => {
        let data = await  dispatch(deleteProduct(productid)).unwrap()
-       toast.success(data.message)
+      //  console.log("data delete product ---:> " , data)
+       if(!data.data.status){
+        toast.error(data.message)
+       }else{
+         toast.success(data.message)
+       }
+
   }
 
   return (

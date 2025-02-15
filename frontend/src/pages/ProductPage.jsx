@@ -2,7 +2,9 @@ import React , {useEffect, useState} from 'react'
 import {ArrowLeftIcon, SaveIcon, Trash2Icon } from "lucide-react"
 import { useParams ,  useNavigate } from 'react-router-dom'
 import {useDispatch} from "react-redux"
-import { getProduct } from '../slices/productSlice'
+import toast from 'react-hot-toast'
+
+import { getProduct  , updateProduct} from '../slices/productSlice'
 const ProductPage = () => {
   let [formdata , setFormData] = useState({
       name:"",
@@ -10,13 +12,23 @@ const ProductPage = () => {
       price:""
   })
   let [currentproduct , setCurrentProduct] = useState({}) 
+  let [isloading , setIsLoading] = useState(false)
+
   let dispatch = useDispatch()
   let {id } = useParams()
-  
+
   let navigate = useNavigate()
 
-  let isloading =false
-  let error = false
+  const saveProduct = async () => {
+      setIsLoading(true)
+      let updateProductdata = await   dispatch(updateProduct(formdata ,id )).unwrap()
+      if(!updateProductdata.status){
+        toast.error(updateProductdata.message)
+      }else{
+       toast.success(updateProductdata.message)
+      }
+      setIsLoading(false)
+  }
   
 
   useEffect(() => {
@@ -45,15 +57,15 @@ const ProductPage = () => {
     )
   }
 
-  if(error){
-    return (
-       <div className="container mx-auto px-4 py-8">
-          <div className="alert alert-error">
-              {error}
-          </div>
-       </div>
-    )
-  }
+  // if(error){
+  //   return (
+  //      <div className="container mx-auto px-4 py-8">
+  //         <div className="alert alert-error">
+  //             {error}
+  //         </div>
+  //      </div>
+  //   )
+  // }
 
   return (
      <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -139,7 +151,9 @@ const ProductPage = () => {
 
                       <button 
                       type='submit'
-                      className="btn btn-primary">
+                      className="btn btn-primary"
+                       onClick={() => saveProduct()}
+                       >
                          <SaveIcon 
                           className='size-4 mr-2'
                          />

@@ -1,10 +1,12 @@
 import { Link  , useResolvedPath } from 'react-router-dom'
 import { ShoppingCartIcon  , ShoppingBagIcon } from 'lucide-react'
 import ThemeSelector from './ThemeSelector'
+import { useSelector } from 'react-redux'
 const Navbar = () => {
 
   const {pathname} = useResolvedPath();
   const isHomePage = pathname === "/";
+ let { products} = useSelector(data => data)
 
   return (
     <div className='bg-base-100/80 backdrop-blur-lg border-b border-base-content/10 sticky top-0 z-50'>
@@ -31,7 +33,7 @@ const Navbar = () => {
                             <div className="indicator">
                                 <div className="p-2 rounded-full hover:bg-base-200 transition-colors">
                                     <ShoppingBagIcon className="size-5"/>
-                                    <span className="badge badge-sm badge-primary indicator-item">5</span>
+                                    <span className="badge badge-sm badge-primary indicator-item">{products?.data?.length ?? 0}</span>
                                 </div>
                             </div>
                         )

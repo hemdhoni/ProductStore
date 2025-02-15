@@ -80,13 +80,13 @@ export const updateProduct = async (req, res) => {
             if(image){
                 updateObj.image = image
             }
-            await sql`UPDATE products SET name=${updateObj.name} , price=${updateObj.price} , image=${updateObj.image} WHERE id = ${id}`;
+            await sql`UPDATE products SET name=${updateObj.name} , price=${parseInt(updateObj.price)} , image=${updateObj.image} WHERE id = ${id}`;
             res.status(200).json({
                 status: true,
                 message: "Product updated successfully!",
             });
         }else{
-            res.status(500).json({
+            res.status(200).json({
                 status: false,
                 message: "Product Not Found!",
             });
@@ -95,7 +95,8 @@ export const updateProduct = async (req, res) => {
         // Use a parameterized query to avoid SQL injection
        
     } catch (error) {
-        res.status(500).json({
+        console.log("update products 0-----:> " , error.message)
+        res.status(200).json({
             status: false,
             message: `Error updating product: ${error.message}`,
         });
@@ -110,21 +111,22 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req,res) => {
 
     try {
-        // let data =  await sql`DELETE products WHERE id=${req.params.id} RETURNING *`
+        let data =  await sql`DELETE  FROM products WHERE id=${req.params.id} RETURNING *`
         
-        //  if(data.length == 0){
-        //     return res.status(400).json({
-        //         success:false,
-        //         message:"Product not found"
-        //     })
-        //  }
+         if(data.length == 0){
+            return res.status(400).json({
+                success:false,
+                message:"Product not found"
+            })
+         }
          res.status(200).json({
              data:{},
              status:true,
              message:"DELETE  product successfully !"
          })
      } catch (error) {
-         res.status(500).json({
+        console.log("error      " ,  error.message)
+         res.status(200).json({
              data:{},
              status:false,
              message:`error while DELETE  product:${error.message}`
